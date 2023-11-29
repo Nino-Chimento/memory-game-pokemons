@@ -22,8 +22,7 @@ export const usePokemonFetch = () => {
                 return { name: response.name, imageUrl: response.sprites.front_default, isTurned: false, id: response.id };
             })
         ).then(function (result) {
-            const duplicateCards = result.concat(result);
-            setPokemonCards(duplicateCards)
+            setPokemonCards(result.concat(result))
         }).catch(function (err) {
             setErrorPokemonCards(err)
         })
