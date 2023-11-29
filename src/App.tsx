@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Spinner, AlertError, CardPokemon } from './components/index'
 import { usePokemonFetch } from "./usePokemonFetch"
 import { PokemonCard } from './model';
-import { Container, MainView, StyledMemoryTitle } from './styled/AppStyled';
+import { Container, StyledMemoryTitle, ContainerCards, View, ContainerTitle } from './styled/AppStyled';
 import { Button } from '@mui/material';
 function App() {
   const { pokemonCards: data, error, isLoading, errorPokemonCards, isLoadingPokemonCards } = usePokemonFetch()
@@ -28,7 +28,6 @@ function App() {
   }, [pokemonCards])
 
   useEffect(() => {
-
     if (cardFlippedFirst && cardFlippedFirst.id === cardFlippedSecond?.id) {
       setOpenCards(prev => [...prev, cardFlippedFirst?.id, cardFlippedSecond?.id])
     }
@@ -41,13 +40,7 @@ function App() {
       setCardFlippedSecond(null)
       setCountMove(prev => prev + 1)
     }
-
   }, [cardFlippedFirst, cardFlippedSecond, closeCards, pokemonCards])
-
-
-
-  if (isLoading || isLoadingPokemonCards) return <Spinner />
-  if (error || errorPokemonCards) return <AlertError />
 
   const handlerFlip = (indexPokemon: number) => {
     const pokemonFlip = pokemonCards.map((pokemon, index) => {
@@ -60,18 +53,28 @@ function App() {
     setPokemonCards(pokemonFlip)
   }
 
-  return (<Container>
-    <StyledMemoryTitle>Memory Game</StyledMemoryTitle>
-    <StyledMemoryTitle>Your Moves {countMoves}</StyledMemoryTitle>
+  if (isLoading || isLoadingPokemonCards) return <Spinner />
+  if (error || errorPokemonCards) return <AlertError />
 
-    {openCards.length === 8 && <>
-      <StyledMemoryTitle>You Win!</StyledMemoryTitle>
-      <Button onClick={() => closeCards()} variant="contained">Restart Game</Button>
-    </>}
-    <MainView>
-      {pokemonCards?.map((pokemon, index) => <CardPokemon index={index} key={`${pokemon.id}.${index}`} imageUrl={pokemon.imageUrl} onTurn={() => handlerFlip(index)} isTurned={pokemon.isTurned} />)}
-    </MainView>
-  </Container>
+
+
+  return (
+    <Container>
+      <View>
+        <ContainerTitle>
+          <StyledMemoryTitle>Memory Game</StyledMemoryTitle>
+          <StyledMemoryTitle>Your Moves {countMoves}</StyledMemoryTitle>
+
+          {openCards.length === 8 && <>
+            <StyledMemoryTitle>You Win!</StyledMemoryTitle>
+            <Button onClick={() => closeCards()} variant="contained">Restart Game</Button>
+          </>}
+        </ContainerTitle>
+        <ContainerCards>
+          {pokemonCards?.map((pokemon, index) => <CardPokemon index={index} key={`${pokemon.id}.${index}`} imageUrl={pokemon.imageUrl} onTurn={() => handlerFlip(index)} isTurned={pokemon.isTurned} />)}
+        </ContainerCards>
+      </View>
+    </Container>
   )
 }
 
