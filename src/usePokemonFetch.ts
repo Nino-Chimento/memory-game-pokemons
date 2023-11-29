@@ -7,7 +7,7 @@ import {
 
 
 export const usePokemonFetch = () => {
-    const [pokemoncards, setPokemonCards] = useState<PokemonCard[]>()
+    const [pokemonCards, setPokemonCards] = useState<PokemonCard[]>()
     const [errorPokemonCards, setErrorPokemonCards] = useState()
     const [isLoadingPokemonCards, setIsLoadingPokemonCards] = useState(false)
     const { isLoading, error, data: pokemons } = useQuery({
@@ -36,6 +36,6 @@ export const usePokemonFetch = () => {
     }, [pokemons])
 
     return {
-        pokemoncards, error, isLoading, errorPokemonCards, isLoadingPokemonCards
+        pokemonCards, error, isLoading, errorPokemonCards, isLoadingPokemonCards
     }
 }
