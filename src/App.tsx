@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useCallback } from 'react'
 import { Spinner, AlertError, CardPokemon } from './components/index'
 import { usePokemonFetch } from "./usePokemonFetch"
