@@ -7,7 +7,8 @@ export interface PokemonCard {
     name: string;
     imageUrl: string;
     id: number;
-    isTurned: boolean
+    isTurned: boolean;
+    isDisabled: boolean;
 }
 
 export interface Pokemon {

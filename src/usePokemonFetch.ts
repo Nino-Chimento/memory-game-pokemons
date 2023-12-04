@@ -19,10 +19,10 @@ export const usePokemonFetch = () => {
         await Promise.all(
             pokemons?.map(async (pokemon: GetPokemon) => {
                 const response = await getPokemon(pokemon.url);
-                return { name: response.name, imageUrl: response.sprites.front_default, isTurned: false, id: response.id };
+                return { name: response.name, imageUrl: response.sprites.front_default, isTurned: false, id: response.id, isDisable: false };
             })
         ).then(function (result) {
-            setPokemonCards(result.concat(result))
+            setPokemonCards(result.concat(result) as unknown as PokemonCard[])
         }).catch(function (err) {
             setErrorPokemonCards(err)
         })

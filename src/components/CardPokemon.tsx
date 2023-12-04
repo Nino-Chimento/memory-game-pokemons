@@ -6,20 +6,24 @@ export interface ICardInterface {
     index: number
     onTurn: (index: number) => void;
     isTurned: boolean;
+    isDisabled?: boolean
 }
-export const CardPokemon = (props: ICardInterface) => (
-    <CardFlip>
-        <CardFlipInner
-            style={props.isTurned /* && !props.otherWay */ ? { transform: 'rotateY(180deg)' } : /* props.otherWay ? { transform: 'rotateY(360deg)' } :  */{}}
-            onClick={() => props.onTurn(props.index)}
-        >
-            <CardFlipFront>
-                <StyledImage src={back} alt="img-back" />
-            </CardFlipFront>
-            <CardFlipBack>
-                <StyledImage src={props.imageUrl} alt="img-card" />
-            </CardFlipBack>
-        </CardFlipInner>
-    </CardFlip>
-);
+export const CardPokemon = (props: ICardInterface) => {
+
+    return (
+        <CardFlip>
+            <CardFlipInner
+                style={props.isTurned ? { transform: 'rotateY(180deg)' } : {}}
+                onClick={() => !props.isDisabled && props.onTurn(props.index)}
+            >
+                <CardFlipFront>
+                    <StyledImage src={back} alt="img-back" />
+                </CardFlipFront>
+                <CardFlipBack>
+                    <StyledImage src={props.imageUrl} alt="img-card" />
+                </CardFlipBack>
+            </CardFlipInner>
+        </CardFlip>
+    )
+};
 

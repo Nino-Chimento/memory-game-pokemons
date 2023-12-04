@@ -11,6 +11,7 @@ function App() {
   const [openCards, setOpenCards] = useState<number[]>([])
   const [cardFlippedFirst, setCardFlippedFirst] = useState<PokemonCard | null>()
   const [cardFlippedSecond, setCardFlippedSecond] = useState<PokemonCard | null>()
+  const [cardFlippedIndex, setCardFlippedIndex] = useState<number | null>()
 
   useEffect(() => {
     if (data) {
@@ -25,26 +26,48 @@ function App() {
       return { ...pokemon, isTurned: false }
     })
     setPokemonCards(coverCards)
+    setOpenCards([])
+    setCountMove(0)
   }, [pokemonCards])
+
+  const closeCardsNotFlipped = useCallback(() => {
+    const coverCards = pokemonCards.map(pokemon => {
+      if (openCards.includes(pokemon.id)) {
+        return { ...pokemon, isTurned: true }
+      }
+      return { ...pokemon, isTurned: false }
+    })
+    setPokemonCards(coverCards)
+  }, [openCards, pokemonCards])
+
+
+  const setNullCardsSelect = () => {
+    setCardFlippedFirst(null)
+    setCardFlippedSecond(null)
+    setCardFlippedIndex(null)
+  }
 
   useEffect(() => {
     if (cardFlippedFirst && cardFlippedFirst.id === cardFlippedSecond?.id) {
+      setNullCardsSelect()
       setOpenCards(prev => [...prev, cardFlippedFirst?.id, cardFlippedSecond?.id])
     }
     if (cardFlippedSecond && cardFlippedFirst && cardFlippedSecond?.id !== cardFlippedFirst.id) {
-      setTimeout(() => closeCards(), 1000);
-      setOpenCards([])
+      setTimeout(() => {
+        setNullCardsSelect()
+        closeCardsNotFlipped()
+      }, 1000);
     }
     if (cardFlippedFirst && cardFlippedSecond) {
-      setCardFlippedFirst(null)
-      setCardFlippedSecond(null)
       setCountMove(prev => prev + 1)
     }
-  }, [cardFlippedFirst, cardFlippedSecond, closeCards, pokemonCards])
+
+  }, [cardFlippedFirst, cardFlippedSecond, closeCards, closeCardsNotFlipped, pokemonCards])
 
   const handlerFlip = (indexPokemon: number) => {
     const pokemonFlip = pokemonCards.map((pokemon, index) => {
       if (index === indexPokemon) {
+        setCardFlippedIndex(indexPokemon)
         !cardFlippedFirst ? setCardFlippedFirst(pokemon) : setCardFlippedSecond(pokemon)
         return { ...pokemon, isTurned: true }
       }
@@ -52,11 +75,9 @@ function App() {
     })
     setPokemonCards(pokemonFlip)
   }
-
+  const cardPokemonIsDisabled = (index: number, id: number) => Boolean(cardFlippedFirst && cardFlippedSecond) || index === cardFlippedIndex || openCards.includes(id)
   if (isLoading || isLoadingPokemonCards) return <Spinner />
   if (error || errorPokemonCards) return <AlertError />
-
-
 
   return (
     <Container>
@@ -71,7 +92,7 @@ function App() {
           </>}
         </ContainerTitle>
         <ContainerCards>
-          {pokemonCards?.map((pokemon, index) => <CardPokemon index={index} key={`${pokemon.id}.${index}`} imageUrl={pokemon.imageUrl} onTurn={() => handlerFlip(index)} isTurned={pokemon.isTurned} />)}
+          {pokemonCards?.map((pokemon, index) => <CardPokemon index={index} key={`${pokemon.id}.${index}`} imageUrl={pokemon.imageUrl} onTurn={() => handlerFlip(index)} isTurned={pokemon.isTurned} isDisabled={cardPokemonIsDisabled(index, pokemon.id)} />)}
         </ContainerCards>
       </View>
     </Container>
